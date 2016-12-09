@@ -1,6 +1,5 @@
 # ByeStoryboards
-Automatically remove Main.storyboard from newly create XCode projects so you can create all views with XIBs or programmatically.
-
+The current default XCode project comes bundled with a file, `Main.storyboard`, to be used for the main UI. If you don't want to use storyboards for your project, there are a few necessary steps to rip out the storyboard and set up the `UIWindow` programmatically. This script automates as much of that process as possible.
 
 ## Usage
 `ruby bye_storyboards.rb <project root>`
@@ -24,3 +23,4 @@ Done! Drop something like this in AppDelegate.m didFinishLaunchingWithOptions:
 
 ## TODOs
 - Clear out LaunchScreen.storyboard and replace with LaunchScreen.xib, add entry to Info.plist
+- Manually add window initialization to the app delegate
