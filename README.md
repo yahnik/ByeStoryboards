@@ -1,6 +1,8 @@
 # ByeStoryboards
 The current default XCode project comes bundled with a file, `Main.storyboard`, to be used for the main UI. If you don't want to use storyboards for your project, there are a few necessary steps to rip out the storyboard and set up the `UIWindow` programmatically. This script automates as much of that process as possible.
 
+Requires https://github.com/CocoaPods/Xcodeproj
+
 ## Usage
 `ruby bye_storyboards.rb <project root>`
 
