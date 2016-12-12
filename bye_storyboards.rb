@@ -3,11 +3,11 @@
 require 'fileutils'
 require 'xcodeproj'
 
-def update_plist(plist_file)
+def update_plist(plist_file_path)
   out_file = File.open('./temp.info.plist', 'w')
 
   skipNext = false
-  File.open(plist_file, 'r') do |f|
+  File.open(plist_file_path, 'r') do |f|
     f.each_line do |line|
       if (line['UIMainStoryboardFile'] || skipNext)
         puts "\tRemoving line: #{line}"
@@ -19,9 +19,35 @@ def update_plist(plist_file)
   end
 
   # copy new file over info.plist, deleting the temp
-  FileUtils.mv(out_file, plist_file);
+  FileUtils.mv(out_file, plist_file_path)
 end
 
+WINDOW_INIT_CODE =
+'    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    [self.window makeKeyAndVisible];
+    self.window.rootViewController = [[UIViewController alloc] init];
+'
+
+def update_app_delegate(app_delegate_path)
+    out_file = File.open('./temp.appdelegate.m', 'w')
+
+    doInsert = false
+    File.open(app_delegate_path, 'r') do |f|
+      f.each_line do |line|
+        if(line["didFinishLaunchingWithOptions"])
+          doInsert = true
+        end
+        
+        out_file.write(line)
+        if(doInsert)
+          doInsert = false
+          out_file.write(WINDOW_INIT_CODE)
+        end
+      end
+    end
+
+    FileUtils.mv(out_file, app_delegate_path)
+end
 
 
 USAGE = "usage: 'ruby bye_storyboards.rb <project name>'"
@@ -34,13 +60,21 @@ project_top_level = ARGV[0]
 project_name = project_top_level.split('/').last
 puts "Removing default storyboard from #{project_name}..."
 
-# remove UIMainStoryboardFile from Info.plist
+#
+# Step 1:
+# Remove UIMainStoryboardFile from Info.plist
+#
+
 plist_path = "#{project_top_level}/#{project_name}/Info.plist"
 puts "==> Cleaning plist file: #{plist_path}"
 
 update_plist(plist_path)
 
-# remove Main.storyboard from the project
+#
+# Step 2:
+# Remove Main.storyboard from the project
+#
+
 project_path = "#{project_top_level}/#{project_name}.xcodeproj"
 puts "==> Opening project file: #{project_path}"
 
@@ -57,8 +91,14 @@ end
 
 project.save
 
-puts "\nDone! Drop something like this in AppDelegate.m didFinishLaunchingWithOptions:\n\n"
-puts "    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [self.window makeKeyAndVisible];
-    self.window.rootViewController = [[UIViewController alloc] init];"
-puts "\n"
+#
+# Step 3:
+# Add window intiailization code to app delegate
+#
+
+app_delegate_path = "#{project_top_level}/#{project_name}/AppDelegate.m"
+puts "==> Updating app delegate: #{app_delegate_path}"
+
+update_app_delegate(app_delegate_path);
+
+puts "\nDone!\n\n"
