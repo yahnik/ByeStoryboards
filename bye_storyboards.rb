@@ -3,24 +3,6 @@
 require 'fileutils'
 require 'xcodeproj'
 
-def update_plist(plist_file_path)
-  out_file = File.open('./temp.info.plist', 'w')
-
-  skipNext = false
-  File.open(plist_file_path, 'r') do |f|
-    f.each_line do |line|
-      if (line['UIMainStoryboardFile'] || skipNext)
-        puts "\tRemoving line: #{line}"
-        skipNext = !skipNext
-      else
-        out_file.write(line)
-      end
-    end
-  end
-
-  # copy new file over info.plist, deleting the temp
-  FileUtils.mv(out_file, plist_file_path)
-end
 
 WINDOW_INIT_CODE =
 '    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -68,7 +50,9 @@ puts "Removing default storyboard from #{project_name}..."
 plist_path = "#{project_top_level}/#{project_name}/Info.plist"
 puts "==> Cleaning plist file: #{plist_path}"
 
-update_plist(plist_path)
+plist_hash = Xcodeproj::Plist::read_from_path(plist_path)
+plist_hash.delete("UIMainStoryboardFile")
+Xcodeproj::Plist::write_to_path(plist_hash, plist_path)
 
 #
 # Step 2:
