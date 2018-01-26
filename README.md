@@ -3,12 +3,12 @@ The current default XCode project comes bundled with a file, `Main.storyboard`, 
 
 Note that this script assumes you haven't changed the structure or file names in your new XCode project.
 
-Requires https://github.com/CocoaPods/Xcodeproj. Install by running `$ [sudo] gem install xcodeproj`
+Requires https://github.com/CocoaPods/Xcodeproj. Install by running `$ [sudo] gem install xcodeproj`.
 
 ## Usage
 `ruby bye_storyboards.rb <project root>`
 
-#####Example output:
+#### Example output:
 ```
 Dan@[~/code/ByeStoryboards]$ ruby bye_storyboards.rb ../TextFieldFoolin
 Removing default storyboard from TextFieldFoolin...
@@ -22,7 +22,7 @@ Removing default storyboard from TextFieldFoolin...
 Done!
 ```
 
-#####Resulting Diff
+#### Resulting Diff
 ```
 Dan@[~/code/TextFieldFoolin]$ git diff
 diff --git a/TextFieldFoolin.xcodeproj/project.pbxproj b/TextFieldFoolin.xcodeproj/project.pbxproj
