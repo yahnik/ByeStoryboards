@@ -3,7 +3,7 @@ The current default XCode project comes bundled with a file, `Main.storyboard`, 
 
 Note that this script assumes you haven't changed the structure or file names in your new XCode project.
 
-Requires https://github.com/CocoaPods/Xcodeproj
+Requires https://github.com/CocoaPods/Xcodeproj. Install by running `$ [sudo] gem install xcodeproj`
 
 ## Usage
 `ruby bye_storyboards.rb <project root>`
